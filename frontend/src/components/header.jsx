@@ -1,14 +1,15 @@
 import React from "react";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { Route, useHistory } from "react-router-dom";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import SearchBox from "./searchBox";
+import { FaMoon, FaUserGraduate } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/userActions";
+import { useHistory } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -16,58 +17,69 @@ const Header = () => {
     dispatch(logout());
     history.push("/login");
   };
+
   return (
-    <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
-        <Container>
-          <LinkContainer to="/">
-            <Navbar.Brand>NSD Solutions</Navbar.Brand>
-          </LinkContainer>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+    <Navbar expand="lg" variant="dark" className="shadow-lg">
+      <Container>
+        <LinkContainer to="/">
+          <Navbar.Brand>
+            <FaUserGraduate style={{ marginRight: "10px" }} />
+            SmartNest AI
+          </Navbar.Brand>
+        </LinkContainer>
+
+        <Navbar.Toggle />
+
+        <Navbar.Collapse>
+          <Nav className="ms-auto align-items-center">
+
             {userInfo && (
-              <Route render={({ history }) => <SearchBox history={history} />} />
-            )}
-            <Nav className="ml-auto">
-              {userInfo && (
-                <NavDropdown title="More">
-                  <LinkContainer to="/attendance">
-                    <NavDropdown.Item>Attendance</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/addStudent">
-                    <NavDropdown.Item>Add Student</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/analysis">
-                    <NavDropdown.Item>View Analysis</NavDropdown.Item>
-                  </LinkContainer>
-                </NavDropdown>
-              )}
-              {userInfo ? (
-                <NavDropdown title={userInfo.name} id="username">
+              <>
+                <LinkContainer to="/">
+                  <Nav.Link>Dashboard</Nav.Link>
+                </LinkContainer>
+
+                <LinkContainer to="/attendance">
+                  <Nav.Link>Attendance</Nav.Link>
+                </LinkContainer>
+
+                <LinkContainer to="/analysis">
+                  <Nav.Link>Analytics</Nav.Link>
+                </LinkContainer>
+
+                <LinkContainer to="/addStudent">
+                  <Nav.Link>Add Student</Nav.Link>
+                </LinkContainer>
+
+                <NavDropdown title={userInfo.name}>
                   <LinkContainer to="/profile">
-                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                    <NavDropdown.Item>
+                      Profile
+                    </NavDropdown.Item>
                   </LinkContainer>
+
                   {userInfo.isAdmin && (
                     <LinkContainer to="/userList">
-                      <NavDropdown.Item>Users List</NavDropdown.Item>
+                      <NavDropdown.Item>
+                        Users
+                      </NavDropdown.Item>
                     </LinkContainer>
                   )}
+
                   <NavDropdown.Item onClick={logoutHandler}>
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>
-              ) : (
-                <LinkContainer to="/login">
-                  <Nav.Link>
-                    <i className="fas fa-user"></i> Sign In
-                  </Nav.Link>
-                </LinkContainer>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </header>
+              </>
+            )}
+
+            <Nav.Link>
+              <FaMoon />
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
